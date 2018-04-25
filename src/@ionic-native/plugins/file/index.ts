@@ -1084,15 +1084,15 @@ export class File extends IonicNativePlugin {
     console.log('FORK [writeFile] begin resolveDirectoryUrl');
     return this.resolveDirectoryUrl(path)
       .then((directoryEntry: DirectoryEntry) => {
-        console.log('FORK [writeFile] then getFile');      
-        console.log('FORK [writeFile] then getFile directoryEntry');    
-        console.log(directoryEntry);  
+        console.log('FORK [writeFile] then getFile');
+        console.log('FORK [writeFile] then getFile directoryEntry');
+        console.log(directoryEntry);
         return this.getFile(directoryEntry, fileName, getFileOpts);
       })
       .then((fileEntry: FileEntry) => {
-        console.log('FORK [writeFile] then writeFileEntry');              
-        console.log('FORK [writeFile] then writeFileEntry fileEntry');      
-        console.log(fileEntry)        
+        console.log('FORK [writeFile] then writeFileEntry');
+        console.log('FORK [writeFile] then writeFileEntry fileEntry');
+        console.log(fileEntry);
         return this.writeFileEntry(fileEntry, text, options);
       });
   }
@@ -1303,14 +1303,14 @@ export class File extends IonicNativePlugin {
    * @hidden
    */
   private fillErrorMessage(err: FileError): void {
-    console.log('FORK [fillErrorMessage] begin');    
+    console.log('FORK [fillErrorMessage] begin');
     console.log('FORK [fillErrorMessage] err');
-    console.log(err);    
+    console.log(err);
     try {
       err.message = this.cordovaFileError[err.code];
     } catch (e) {
-      console.log('FORK [fillErrorMessage] catch e');   
-      console.log(e)   
+      console.log('FORK [fillErrorMessage] catch e');
+      console.log(e);
     }
   }
 
@@ -1321,28 +1321,28 @@ export class File extends IonicNativePlugin {
    */
   @CordovaCheck()
   resolveLocalFilesystemUrl(fileUrl: string): Promise<Entry> {
-    console.log('FORK [resolveLocalFilesystemUrl] begin');    
-    console.log('FORK [resolveLocalFilesystemUrl] begin fileUrl', fileUrl);    
+    console.log('FORK [resolveLocalFilesystemUrl] begin');
+    console.log('FORK [resolveLocalFilesystemUrl] begin fileUrl', fileUrl);
     return new Promise<Entry>((resolve, reject) => {
       console.log('FORK [resolveLocalFilesystemUrl] begin try');
       try {
         window.resolveLocalFileSystemURL(
           fileUrl,
           (entry: Entry) => {
-            console.log('FORK [resolveLocalFilesystemUrl] window.resolveLocalFileSystemURL entry');    
+            console.log('FORK [resolveLocalFilesystemUrl] window.resolveLocalFileSystemURL entry');
             console.log(entry);
             resolve(entry);
           },
           err => {
-            console.log('FORK [resolveLocalFilesystemUrl] window.resolveLocalFileSystemURL error');    
+            console.log('FORK [resolveLocalFilesystemUrl] window.resolveLocalFileSystemURL error');
             console.log(err);
             this.fillErrorMessage(err);
             reject(err);
           }
         );
       } catch (xc) {
-        console.log('FORK [resolveLocalFilesystemUrl] catch');            
-        console.log(xc)
+        console.log('FORK [resolveLocalFilesystemUrl] catch');
+        console.log(xc);
         this.fillErrorMessage(xc);
         reject(xc);
       }
