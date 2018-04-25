@@ -1067,6 +1067,9 @@ export class File extends IonicNativePlugin {
     text: string | Blob | ArrayBuffer,
     options: IWriteOptions = {}
   ): Promise<any> {
+    console.log('FORK [writeFile] begin');
+    console.log('FORK [writeFile] path:', path);
+    console.log('FORK [writeFile] fileName:', fileName);
     if (/^\//.test(fileName)) {
       const err = new FileError(5);
       err.message = 'file-name cannot start with /';
@@ -1078,11 +1081,18 @@ export class File extends IonicNativePlugin {
       exclusive: !options.replace
     };
 
+    console.log('FORK [writeFile] begin resolveDirectoryUrl');
     return this.resolveDirectoryUrl(path)
       .then((directoryEntry: DirectoryEntry) => {
+        console.log('FORK [writeFile] then getFile');      
+        console.log('FORK [writeFile] then getFile directoryEntry');    
+        console.log(directoryEntry);  
         return this.getFile(directoryEntry, fileName, getFileOpts);
       })
       .then((fileEntry: FileEntry) => {
+        console.log('FORK [writeFile] then writeFileEntry');              
+        console.log('FORK [writeFile] then writeFileEntry fileEntry');      
+        console.log(fileEntry)        
         return this.writeFileEntry(fileEntry, text, options);
       });
   }
@@ -1293,9 +1303,15 @@ export class File extends IonicNativePlugin {
    * @hidden
    */
   private fillErrorMessage(err: FileError): void {
+    console.log('FORK [fillErrorMessage] begin');    
+    console.log('FORK [fillErrorMessage] err');
+    console.log(err);    
     try {
       err.message = this.cordovaFileError[err.code];
-    } catch (e) {}
+    } catch (e) {
+      console.log('FORK [fillErrorMessage] catch e');   
+      console.log(e)   
+    }
   }
 
   /**
@@ -1305,19 +1321,28 @@ export class File extends IonicNativePlugin {
    */
   @CordovaCheck()
   resolveLocalFilesystemUrl(fileUrl: string): Promise<Entry> {
+    console.log('FORK [resolveLocalFilesystemUrl] begin');    
+    console.log('FORK [resolveLocalFilesystemUrl] begin fileUrl', fileUrl);    
     return new Promise<Entry>((resolve, reject) => {
+      console.log('FORK [resolveLocalFilesystemUrl] begin try');
       try {
         window.resolveLocalFileSystemURL(
           fileUrl,
           (entry: Entry) => {
+            console.log('FORK [resolveLocalFilesystemUrl] window.resolveLocalFileSystemURL entry');    
+            console.log(entry);
             resolve(entry);
           },
           err => {
+            console.log('FORK [resolveLocalFilesystemUrl] window.resolveLocalFileSystemURL error');    
+            console.log(err);
             this.fillErrorMessage(err);
             reject(err);
           }
         );
       } catch (xc) {
+        console.log('FORK [resolveLocalFilesystemUrl] catch');            
+        console.log(xc)
         this.fillErrorMessage(xc);
         reject(xc);
       }
@@ -1331,10 +1356,16 @@ export class File extends IonicNativePlugin {
    */
   @CordovaCheck()
   resolveDirectoryUrl(directoryUrl: string): Promise<DirectoryEntry> {
+    console.log('FORK [resolveDirectoryUrl] begin');
+    console.log('FORK [resolveDirectoryUrl] directoryUrl', directoryUrl);
     return this.resolveLocalFilesystemUrl(directoryUrl).then(de => {
+      console.log('FORK [resolveDirectoryUrl] then directoryUrl', directoryUrl);
+      console.log('FORK [resolveDirectoryUrl] then return directoryEntry');
+      console.log(de);
       if (de.isDirectory) {
         return <DirectoryEntry>de;
       } else {
+        console.log('FORK [resolveDirectoryUrl] ERROR');
         const err = new FileError(13);
         err.message = 'input is not a directory';
         return Promise.reject<DirectoryEntry>(err);
